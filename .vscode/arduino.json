@@ -1,0 +1,7 @@
+{
+    "configuration": "mode=on",
+    "board": "arduino:megaavr:nona4809",
+    "port": "COM16",
+    "sketch": "examples\\TestProgram\\TestProgram.ino",
+    "output": "../ArduinoOutput"
+}
