@@ -1,33 +1,24 @@
-#include <EveryTimer.h>
+int a = 1;
 
 void setup() {
-  Serial.begin(115200);
-  delay(1000);
+  pinMode(2, OUTPUT);
 
-  Serial.print(TCB2_CCMP);
-  Serial.print(",");
-  Serial.print(TCB2_CTRLA);
-  Serial.print(",");
-  Serial.print(TCB2_CTRLB);
-  Serial.println("");
-
-  TCB2_CCMP = 1000;  //TOP値の設定
-  TCB2_CTRLB = 0b00000000;
-  TCB2_CTRLA = (TCB2_CTRLA & 0b11111000) + 0b00000001;  //カウント周期を設定してカウントスタート
-
-  
+  TCB2.CCMP = 25000;  // TOP値の設定
+  TCB2.CTRLB = (TCB2.CTRLB & 0b10101000) + 0b00000000;  //タイマーのGPIO出力ON、クロックソースを設定
+  TCB2.CTRLA = (TCB2.CTRLA & 0b11111000) + 0b00000101;  //カウント周期を設定してカウントスタート
+  TCB2.INTCTRL = 1;  //割り込み許可
 }
 
 void loop() {
-  // Serial.print(TCB2_CTRLB, BIN);
-  // Serial.print(",");
-  // Serial.print(TCB2_CTRLA, BIN);
-  // Serial.print(",");
-  // Serial.print(TCB2_CNT, DEC);
-  // Serial.print(",");
-  // Serial.print(TCB2_CNT, DEC);
-  // Serial.print(",");
 
-  // Serial.println("");
-  delay(100);
+}
+
+ISR(TCB2_INT_vect) {
+  TCB2.INTFLAGS = 1;  //割り込みフラグのクリア
+  if (a == 1) {
+    digitalWrite(2, HIGH);
+  } else {
+    digitalWrite(2, LOW);
+  }
+  a = 1 - a;
 }
